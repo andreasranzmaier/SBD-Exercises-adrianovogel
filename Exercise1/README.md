@@ -111,7 +111,7 @@ In the `ecommerce` folder:
 
 Using SQL ([see the a list of supported SQL commands](https://www.postgresql.org/docs/current/sql-commands.html)), answer the following questions:
 
-**A.** What is the single item with the highest `price_per_unit`?
+**A.** What is the single category with the highest `price_per_category`?
 
 **B.** What are the top 3 products with the highest total quantity sold across all orders?
 
@@ -121,13 +121,16 @@ Using SQL ([see the a list of supported SQL commands](https://www.postgresql.org
 **D.** Which customers have the highest total spending?
 
 ## Exercise 2
+
 Assuming there are naive joins executed by users, such as:
+
 ```sql
 SELECT COUNT(*)
 FROM people_big p1
 JOIN people_big p2
   ON p1.country = p2.country;
 ```
+
 ## Problem Statement
 
 This query takes more than **10 minutes** to complete, significantly slowing down the entire system. Additionally, the **OLTP database** currently in use has inherent limitations in terms of **scalability and efficiency**, especially when operating in **large-scale cloud environments**.
@@ -341,6 +344,7 @@ Now, explain in your own words:
 
 - **Relation to Exercise 2:**  
   Connect this approach to the concepts explored in Exercise 2, such as performance optimization and scalability considerations.
+
 
 ## Exercise 4
 Port the SQL queries from exercise 1 to spark.
