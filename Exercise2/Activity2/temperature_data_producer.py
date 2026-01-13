@@ -1,17 +1,17 @@
 import os
-import subprocess
-import sys
 import random
 import time
 from datetime import datetime
 import psycopg2
 from psycopg2 import sql
 
-DB_NAME = "office_db"
-DB_USER = "postgres"
-DB_PASSWORD = "postgrespw"
-DB_HOST = "localhost"
-DB_PORT = 5432
+DB_NAME = os.getenv("DB_NAME", "office_db")
+DB_USER = os.getenv("DB_USER", "postgres")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "postgrespw")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = int(os.getenv("DB_PORT", "5432"))
+SENSOR_ID = os.getenv("SENSOR_ID", "sensor_1")
+INTERVAL_SECONDS = int(os.getenv("INTERVAL_SECONDS", "60"))
 
 # Step 1: Connect to default database
 conn = psycopg2.connect(
@@ -59,21 +59,17 @@ conn.commit()
 print("Table ready.")
 
 # Step 5: Produce sample data
-import random, time
-from datetime import datetime
-
-sensor_id = "sensor_1"
 
 try:
     while True:
         temp = round(random.uniform(18.0, 30), 2)
         cursor.execute(
             "INSERT INTO temperature_readings (sensor_id, temperature, recorded_at) VALUES (%s, %s, %s)",
-            (sensor_id, temp, datetime.now())
+            (SENSOR_ID, temp, datetime.now())
         )
         conn.commit()
         print(f"{datetime.now()} - Inserted temperature: {temp} °C")
-        time.sleep(60)
+        time.sleep(INTERVAL_SECONDS)
 except KeyboardInterrupt:
     print("Stopped producing data.")
 finally:
