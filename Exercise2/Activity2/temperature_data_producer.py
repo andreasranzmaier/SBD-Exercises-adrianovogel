@@ -1,9 +1,9 @@
 import os
 import random
-import time
 from datetime import datetime
-import psycopg2
-from psycopg2 import sql
+
+import psycopg
+from psycopg import sql
 
 DB_NAME = os.getenv("DB_NAME", "office_db")
 DB_USER = os.getenv("DB_USER", "postgres")
@@ -14,37 +14,39 @@ SENSOR_ID = os.getenv("SENSOR_ID", "sensor_1")
 INTERVAL_SECONDS = int(os.getenv("INTERVAL_SECONDS", "60"))
 
 # Step 1: Connect to default database
-conn = psycopg2.connect(
-    dbname="postgres",  # default DB
+with psycopg.connect(
+    dbname="postgres",
     user=DB_USER,
     password=DB_PASSWORD,
     host=DB_HOST,
-    port=DB_PORT
-)
-conn.autocommit = True  # required to create database
-cursor = conn.cursor()
+    port=DB_PORT,
+    autocommit=True
+) as conn:
 
-# Step 2: Create target database if it doesn't exist
-cursor.execute(sql.SQL("SELECT 1 FROM pg_database WHERE datname = %s"), [DB_NAME])
-exists = cursor.fetchone()
-if not exists:
-    cursor.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(DB_NAME)))
-    print(f"Database {DB_NAME} created.")
-else:
-    print(f"Database {DB_NAME} already exists.")
+    with conn.cursor() as cursor:
+        cursor.execute(
+            "SELECT 1 FROM pg_database WHERE datname = %s",
+            (DB_NAME,)
+        )
+        exists = cursor.fetchone()
 
-cursor.close()
-conn.close()
+        if not exists:
+            cursor.execute(
+                sql.SQL("CREATE DATABASE {}")
+                .format(sql.Identifier(DB_NAME))
+            )
+            print(f"Database {DB_NAME} created.")
+        else:
+            print(f"Database {DB_NAME} already exists.")
 
-# Step 3: Connect to the newly created database
-conn = psycopg2.connect(
+# Step 2: Connect to the target database
+with psycopg.connect(
     dbname=DB_NAME,
     user=DB_USER,
     password=DB_PASSWORD,
     host=DB_HOST,
     port=DB_PORT
-)
-cursor = conn.cursor()
+) as conn:
 
 # Step 4: Create table if it doesn't exist
 cursor.execute("""

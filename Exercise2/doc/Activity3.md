@@ -1,7 +1,7 @@
 # Activity 3
 
 ## Part 1 - Architecture choice
-For this scale and near real-time requirement I would use PostgreSQL as the system of record, Debezium CDC to stream changes, and Kafka as the event bus similar to Activity one. 
+For this scale and near real-time requirement I would use PostgreSQL as the system of record, Debezium CDC to stream changes, and Kafka as the event bus similar to Activity one.
 
 Each fraud agent is a separate Kafka consumer group reading from the same CDC topic.
 This avoids polling the database often and lets many consumers process the same data in parallel.
@@ -112,7 +112,12 @@ I ran for 30 seconds to generate some data and see fraud alerts.
 $ docker exec -i postgres psql -U postgres -d mydb -c "TRUNCATE transactions;"
 TRUNCATE TABLE
 
-$ (KAFKA_BOOTSTRAP_SERVERS=localhost:9094 KAFKA_TOPIC=dbserver1.public.transactions AUTO_OFFSET_RESET=latest PYTHONUNBUFFERED=1 ./venv/bin/python fraud_consumer_agent1.py & c1=$!; KAFKA_BOOTSTRAP_SERVERS=localhost:9094 KAFKA_TOPIC=dbserver1.public.transactions AUTO_OFFSET_RESET=latest PYTHONUNBUFFERED=1 ./venv/bin/python fraud_consumer_agent2.py & c2=$!; DB_HOST=localhost DB_PORT=5433 BATCH_SIZE=50 SLEEP_SECONDS=0.2 PYTHONUNBUFFERED=1 ./venv/bin/python fraud_data_producer.py & prod=$!; sleep 30; kill $prod $c1 $c2) > /tmp/fraud_run.log 2>&1
+$ (KAFKA_BOOTSTRAP_SERVERS=localhost:9094 KAFKA_TOPIC=dbserver1.public.transactions AUTO_OFFSET_RESET=latest PYTHONUNBUFFERED=1 ./venv/bin/python fraud_consumer_agent1.py & c1=$!; 
+
+KAFKA_BOOTSTRAP_SERVERS=localhost:9094 KAFKA_TOPIC=dbserver1.public.transactions AUTO_OFFSET_RESET=latest PYTHONUNBUFFERED=1 ./venv/bin/python fraud_consumer_agent2.py & c2=$!; 
+
+DB_HOST=localhost DB_PORT=5433 BATCH_SIZE=50 SLEEP_SECONDS=0.2 PYTHONUNBUFFERED=1 ./venv/bin/python fraud_data_producer.py & prod=$!; 
+sleep 30; kill $prod $c1 $c2) > /tmp/fraud_run.log 2>&1
 ```
 
 - `BATCH_SIZE=50` and `SLEEP_SECONDS=0.2` make it easier to see fraud events quickly.

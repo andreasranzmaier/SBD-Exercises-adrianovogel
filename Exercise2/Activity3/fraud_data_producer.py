@@ -61,3 +61,4 @@ def generate_data():
 if __name__ == "__main__":
     setup_db()
     generate_data()
+

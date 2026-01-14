@@ -347,14 +347,4 @@ Now, explain in your own words:
 
 
 ## Exercise 4
-<<<<<<< HEAD
 Port the SQL queries from exercise 1 to spark.
-=======
-Port the SQL queries from exercise 1 to spark.
-
-
-## Clean up
-```bash
-docker compose down
-```
->>>>>>> 2f36059572045769cdaeaa01193130f42853a7cb

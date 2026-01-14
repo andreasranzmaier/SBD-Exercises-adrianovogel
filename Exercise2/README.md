@@ -335,7 +335,6 @@ Multiple consumer agents
 Near real-time streaming needed
 
 ## Part 1
-
 Describe which software architecture would be most appropriate for fetching the data from PostgreSQL and generate alerts in real-time. Explain the rationale behind your choice.
 
 ## Part 2
