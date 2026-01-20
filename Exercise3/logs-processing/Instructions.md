@@ -8,6 +8,8 @@ docker exec -it kafka kafka-topics.sh \
   --replication-factor 1
 ```
 
+partions: 2 important for parallelism in spark structured streaming
+
 # Attaching VS Code to the Spark Client container
 Spark does **not** run on your host machine; it runs inside Docker containers. Attaching VS Code ensures:
 
@@ -75,7 +77,7 @@ spark-submit \
             ▼
 ┌────────────────────────┐
 │     Spark Master       │
-│  (Cluster Manager)    │
+│  (Cluster Manager)     │
 │                        │
 │  - registers app       │
 │  - allocates workers   │
@@ -92,7 +94,7 @@ spark-submit \
 ```
 
 See the application submission in the Spark Master: http://localhost:8080
-If there are no crashes, the Spark Driver should be reacheable: http://localhost:4040 
+If there are no crashes, the Spark Driver should be reacheable: http://loca;lhost:4040 
 
 Note that the python application stored locally is submitted to the spark master's URL. Also note number of executors, cores per executors, and memory management. 
 # Running the logs producer (load generator). This should generate the data that the Spark application processes.
